@@ -1,0 +1,29 @@
+{
+  "name": "punkjam",
+  "version": "0.0.0",
+  "description": "#punkjam",
+  "main": "index.html",
+  "scripts": {
+    "test": "open http://localhost:9999 && php -S localhost:9999",
+    "clean": "rm -rf ./build && mkdir build",
+    "build": "npm run clean && browserify src/main.js -o build/main.js",
+    "watch": "npm run clean && cp ./node_modules/phaser/dist/phaser* ./build/ && watchify src/main.js -o build/main.js --debug --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/danreeves/punkjam.git"
+  },
+  "author": "Dan Reeves <hey@danreev.es>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danreeves/punkjam/issues"
+  },
+  "homepage": "https://github.com/danreeves/punkjam",
+  "dependencies": {
+    "phaser": "^2.2.2"
+  },
+  "devDependencies": {
+    "browserify": "^9.0.3",
+    "watchify": "^2.4.0"
+  }
+}

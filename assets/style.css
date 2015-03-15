@@ -1,0 +1,21 @@
+html {
+  box-sizing: border-box;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    background: #000;
+}
+#game {
+  width: 960px;
+  height: 540px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 100px 0 0 -480px;
+  border: 1px #fff solid;
+}
