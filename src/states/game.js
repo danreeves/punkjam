@@ -1,15 +1,12 @@
 // game.js
 
 function gamePreload () {
-
 }
 
 function gameCreate () {
-
 }
 
 function gameUpdate () {
-    console.log('updating')
 }
 
 

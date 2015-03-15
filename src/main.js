@@ -1,8 +1,10 @@
 console.log('#punkjam');
 
-var game = require('./states/game');
-
+// Game
 var game = new Phaser.Game(960, 540, Phaser.AUTO, 'game');
 
-game.state.add('game', game);
+// States
+game.state.add('game', require('./states/game'));
+
+// Start
 game.state.start('game');
