@@ -11,11 +11,13 @@ html, body {
     background: #000;
 }
 #game {
+  margin: 0;
+  padding: 0;
   width: 960px;
   height: 540px;
   position: absolute;
   top: 50%;
   left: 50%;
   margin: 100px 0 0 -480px;
-  border: 1px #fff solid;
+  box-shadow: 0 0 5px lime;
 }
