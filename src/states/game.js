@@ -34,7 +34,6 @@ function gameCreate () {
     // add player
     // The player and its settings
     player = this.add.sprite(32, this.world.height - 200, 'dude');
-    player.tint = Math.random() * 0xffffff;
     player.scale.setTo(2);
     player.anchor.setTo(0.5,0.5);
     player.smoothed = false;
@@ -73,6 +72,7 @@ function gameUpdate () {
 
     playerMovement(player, cursors);
 
+    player.tint = Math.random() * 0xffffff;
 }
 
 
