@@ -1,22 +1,22 @@
-var RUN_SPEED = 400;
-
+var RUN_SPEED = 3500,
+    JUMP_V = 1000,
+    AIR_DECEL = 0.33,
+    AIR_DRAG = 0,
+    FLOOR_DRAG = 5000;
 
 module.exports = function (player, cursors) {
-
-    // Reset the players velocity (movement)
-    player.body.velocity.x = 0;
 
     if (cursors.left.isDown)
     {
         //  Move to the left
-        player.body.velocity.x = -Math.abs(RUN_SPEED);
+        player.body.acceleration.x = -Math.abs(RUN_SPEED);
         player.scale.x = -Math.abs(player.scale.x);
         player.animations.play('run');
     }
     else if (cursors.right.isDown)
     {
         //  Move to the right
-        player.body.velocity.x = Math.abs(RUN_SPEED);
+        player.body.acceleration.x = Math.abs(RUN_SPEED);
         player.scale.x = Math.abs(player.scale.x);
         player.animations.play('run');
     }
@@ -24,17 +24,22 @@ module.exports = function (player, cursors) {
     {
         //  Stand still
         player.animations.play('idle');
+        player.body.acceleration.x = 0;
 
     }
 
     if (!player.body.touching.down) {
         player.animations.play('jump');
-        player.body.velocity.x = player.body.velocity.x/4*3;
+        player.body.acceleration.x = player.body.acceleration.x * AIR_DECEL;
+        player.body.drag.setTo(AIR_DRAG, 0);
+    } else {
+        player.body.drag.setTo(FLOOR_DRAG, 0);
     }
 
     //  Allow the player to jump if they are touching the ground.
     if (cursors.up.isDown && player.body.touching.down)
     {
-        player.body.velocity.y = -1000;
+        player.body.velocity.y = -Math.abs(JUMP_V);
     }
+
 };
