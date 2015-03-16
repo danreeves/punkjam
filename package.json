@@ -4,7 +4,8 @@
   "description": "#punkjam",
   "main": "index.html",
   "scripts": {
-    "test": "open http://localhost:9999 && php -S localhost:9999",
+    "test": "echo fuck tests",
+    "serve": "open http://localhost:9999 && php -S localhost:9999",
     "clean": "rm -rf ./build && mkdir build",
     "build": "npm run clean && browserify src/main.js -o build/main.js",
     "watch": "npm run clean && cp ./node_modules/phaser/dist/phaser* ./build/ && watchify src/main.js -o build/main.js --debug --verbose"
