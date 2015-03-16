@@ -1,4 +1,6 @@
 // game.js
+var playerMovement = require('../modules/playerMovement'),
+DEADZONE_WIDTH = 400;
 
 function gamePreload () {
     this.load.spritesheet('dude', 'assets/img/dude.png', 36, 36);
@@ -11,6 +13,9 @@ function gameCreate () {
 
     // enable physics
     this.physics.startSystem(Phaser.Physics.ARCADE);
+
+    // world bounds
+    this.world.setBounds(0, 0, this.cache.getImage('bg').width*2, this.game.height);
 
     // dont smooth art
     this.stage.smoothed = false;
@@ -40,7 +45,7 @@ function gameCreate () {
     //  Player physics properties. Give the little guy a slight bounce.
     // player.body.bounce.y = 0.2;
     player.body.gravity.y = 2000;
-    // player.body.collideWorldBounds = true;
+    player.body.collideWorldBounds = true;
 
     //  Our two animations, walking left and right.
     player.animations.add('run', [37, 38], 6, true);
@@ -51,45 +56,22 @@ function gameCreate () {
     // controls
     cursors = this.input.keyboard.createCursorKeys();
 
+    // camera
+    this.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON);
+    this.camera.deadzone = new Phaser.Rectangle(
+        this.game.width/2 - DEADZONE_WIDTH/2,
+        this.game.height,
+        DEADZONE_WIDTH,
+        this.game.height
+    );
+    // this.camera.deadzone.fixedToCamera = true;
+
 }
 
 function gameUpdate () {
     this.physics.arcade.collide(player, floor);
 
-  //  Reset the players velocity (movement)
-    player.body.velocity.x = 0;
-
-    if (cursors.left.isDown)
-    {
-        //  Move to the left
-        player.body.velocity.x = -150;
-        player.scale.x = -Math.abs(player.scale.x);
-        player.animations.play('run');
-    }
-    else if (cursors.right.isDown)
-    {
-        //  Move to the right
-        player.body.velocity.x = 150;
-        player.scale.x = Math.abs(player.scale.x);
-        player.animations.play('run');
-    }
-    else
-    {
-        //  Stand still
-        player.animations.play('idle');
-
-    }
-
-    if (!player.body.touching.down) {
-        player.animations.play('jump');
-    }
-
-    //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && player.body.touching.down)
-    {
-        player.body.velocity.y = -1000;
-    }
-
+    playerMovement(player, cursors);
 
 }
 
