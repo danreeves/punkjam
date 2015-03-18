@@ -2,6 +2,7 @@
 
 // Create
 var createPlayer = require('../objects/player'),
+    createCop   = require('../objects/cop'),
     createFloor = require('../objects/floor');
 
 // Update
@@ -9,7 +10,7 @@ var playerMovement = require('../modules/playerMovement');
 
 // Globals
 
-var player, floor, cursors;
+var player, floor, cursors, copz;
 
 function gamePreload () {
     this.load.spritesheet('dude', 'assets/img/dude.png', 36, 36);
@@ -41,12 +42,21 @@ function gameCreate () {
     // controls
     cursors = this.input.keyboard.createCursorKeys();
 
+    // copz
+    copz = this.add.group();
+
 }
 
 function gameUpdate () {
     this.physics.arcade.collide(player, floor);
+    this.physics.arcade.collide(copz, floor);
 
     playerMovement(player, cursors);
+
+    if (copz.length < 1) {
+        copz.add(createCop.bind(this)());
+    }
+
 
     // lol
     player.tint = Math.random() * 0xffffff;
