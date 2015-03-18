@@ -53,9 +53,15 @@ function gameUpdate () {
 
     playerMovement(player, cursors);
 
-    if (copz.length < 1) {
+    if (copz.length < 5) {
         copz.add(createCop.bind(this)());
     }
+    i=1;
+    copz.forEach(function (v) {
+        v.animations.play('run');
+        v.body.velocity.x = i*10;
+        i++;
+    });
 
 
     // lol
