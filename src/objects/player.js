@@ -31,6 +31,10 @@ module.exports = function () {
     player.animations.add('idle', [3], 1, true);
     player.animations.play('idle');
 
+    // misc
+    player.firstJump = null;
+    player.jumps = 0;
+
     // camera
     this.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON);
     this.camera.deadzone = new Phaser.Rectangle(

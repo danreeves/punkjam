@@ -6,7 +6,10 @@ var createPlayer = require('../objects/player'),
     createFloor = require('../objects/floor');
 
 // Update
-var playerMovement = require('../modules/playerMovement');
+var playerMovement = require('../modules/playerMovement'),
+    copMovement = require('../modules/copMovement'),
+    wantedLevel = require('../modules/wantedLevel'),
+    canSpawnCopz = require('../modules/canSpawnCopz');
 
 // Globals
 
@@ -49,22 +52,23 @@ function gameCreate () {
 }
 
 function gameUpdate (test) {
+    // Collisions
     this.physics.arcade.collide(player, floor);
     this.physics.arcade.collide(copz, floor);
 
-    playerMovement(player, cursors);
+    // Player
+    playerMovement.bind(this)(player, cursors);
 
-
-    // Think up algorithm for wanted level
-    // involves time and amount of jumps
-    // not using time.now because it catches up after pause and spawns loads
-    if (copz.length < Math.floor(this.time.now/1000) / 2 && copz.length < MAX_COPZ) {
+    // Copz
+    var wlvl = wantedLevel.bind(this)(player);
+    if (canSpawnCopz.bind(this)(copz, wlvl)) {
         copz.add(createCop.bind(this)(this.camera));
     }
-    copz.forEach(function (v) {
-        v.animations.play('run');
-        v.body.velocity.x = 100;
+    copz.forEach(function (cop) {
+        copMovement(cop, player);
     });
+
+
     // lol
     player.tint = Math.random() * 0xffffff;
 }

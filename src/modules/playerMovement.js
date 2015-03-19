@@ -40,6 +40,10 @@ module.exports = function (player, cursors) {
     if (cursors.up.isDown && player.body.touching.down)
     {
         player.body.velocity.y = -Math.abs(JUMP_V);
+        player.jumps++;
+        if (player.firstJump == null) {
+            player.firstJump = this.time.now;
+        }
     }
 
 };
