@@ -10,7 +10,8 @@ var playerMovement = require('../modules/playerMovement');
 
 // Globals
 
-var player, floor, cursors, copz;
+var player, floor, cursors, copz,
+    MAX_COPZ = 200;
 
 function gamePreload () {
     this.load.spritesheet('dude', 'assets/img/dude.png', 36, 36);
@@ -47,23 +48,23 @@ function gameCreate () {
 
 }
 
-function gameUpdate () {
+function gameUpdate (test) {
     this.physics.arcade.collide(player, floor);
     this.physics.arcade.collide(copz, floor);
 
     playerMovement(player, cursors);
 
-    if (copz.length < 5) {
-        copz.add(createCop.bind(this)(player));
+
+    // Think up algorithm for wanted level
+    // involves time and amount of jumps
+    // not using time.now because it catches up after pause and spawns loads
+    if (copz.length < Math.floor(this.time.now/1000) / 2 && copz.length < MAX_COPZ) {
+        copz.add(createCop.bind(this)(this.camera));
     }
-    i=1;
     copz.forEach(function (v) {
         v.animations.play('run');
-        v.body.velocity.x = i*10;
-        i++;
+        v.body.velocity.x = 100;
     });
-    console.log(this.camera)
-
     // lol
     player.tint = Math.random() * 0xffffff;
 }

@@ -6,26 +6,25 @@ var DEADZONE_WIDTH = 400,
     GRAVITY = 2000,
     WORLD_OVERFLOW;
 
-module.exports = function (player) {
-    WORLD_OVERFLOW = this.cache.getImage('dude').width*2;
+module.exports = function (camera) {
+    WORLD_OVERFLOW = 32*2;
     var cop;
     var spawnLocations = [];
 
     spawnLocations.push(
         Math.min(
-            player.x - this.game.width/2 - this.cache.getImage('dude').width,
+            camera.view.left - 32,
             -WORLD_OVERFLOW
         )
     );
     spawnLocations.push(
         Math.min(
-            player.x + this.game.width + this.cache.getImage('dude').width,
-            this.game.width+WORLD_OVERFLOW
+            camera.view.right + 32,
+            this.game.world.width+WORLD_OVERFLOW
         )
     );
-    console.log(this.camera);
 
-    cop = this.add.sprite(spawnLocations[1], this.world.height - 200, 'dude');
+    cop = this.add.sprite(spawnLocations[Math.floor(Math.random()*2)], this.world.height - 200, 'dude');
     cop.scale.setTo(2);
     cop.anchor.setTo(0.5,0.5);
     cop.smoothed = false;
