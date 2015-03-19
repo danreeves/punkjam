@@ -63,13 +63,29 @@ var DEADZONE_WIDTH = 400,
     MAX_SPEED = 350,
     ACCELERATION = 1000,
     DRAG = 1000,
-    GRAVITY = 2000;
+    GRAVITY = 2000,
+    WORLD_OVERFLOW;
 
-module.exports = function () {
+module.exports = function (player) {
+    WORLD_OVERFLOW = this.cache.getImage('dude').width*2;
     var cop;
+    var spawnLocations = [];
 
+    spawnLocations.push(
+        Math.min(
+            player.x - this.game.width/2 - this.cache.getImage('dude').width,
+            -WORLD_OVERFLOW
+        )
+    );
+    spawnLocations.push(
+        Math.min(
+            player.x + this.game.width + this.cache.getImage('dude').width,
+            this.game.width+WORLD_OVERFLOW
+        )
+    );
+    console.log(this.camera);
 
-    cop = this.add.sprite(32, this.world.height - 200, 'dude');
+    cop = this.add.sprite(spawnLocations[1], this.world.height - 200, 'dude');
     cop.scale.setTo(2);
     cop.anchor.setTo(0.5,0.5);
     cop.smoothed = false;
@@ -80,7 +96,7 @@ module.exports = function () {
     //  cop physics properties. Give the little guy a slight bounce.
     // cop.body.bounce.y = 0.2;
     cop.body.gravity.y = GRAVITY;
-    cop.body.collideWorldBounds = true;
+    // cop.body.collideWorldBounds = true;
 
     cop.body.maxVelocity.setTo(MAX_SPEED, MAX_SPEED * 10);
     cop.body.drag.setTo(DRAG, 0);
@@ -97,15 +113,17 @@ module.exports = function () {
 
 },{}],"/Users/danr/Dropbox/htdocs/punkjam/src/objects/floor.js":[function(require,module,exports){
 // floor.js
+var WORLD_OVERFLOW;
 
 module.exports = function () {
+    WORLD_OVERFLOW = this.cache.getImage('dude').width*2;
     var floor;
 
-    floor = this.add.sprite(0, this.world.height-90, 'sp');
+    floor = this.add.sprite(-WORLD_OVERFLOW, this.world.height-90, 'sp');
     this.physics.arcade.enable(floor);
     floor.body.immovable = true;
     floor.body.allowGravity = false;
-    floor.width = this.world.width;
+    floor.width = this.world.width + WORLD_OVERFLOW;
 
     return floor;
 };
@@ -213,7 +231,7 @@ function gameUpdate () {
     playerMovement(player, cursors);
 
     if (copz.length < 5) {
-        copz.add(createCop.bind(this)());
+        copz.add(createCop.bind(this)(player));
     }
     i=1;
     copz.forEach(function (v) {
@@ -221,7 +239,7 @@ function gameUpdate () {
         v.body.velocity.x = i*10;
         i++;
     });
-
+    console.log(this.camera)
 
     // lol
     player.tint = Math.random() * 0xffffff;

@@ -54,7 +54,7 @@ function gameUpdate () {
     playerMovement(player, cursors);
 
     if (copz.length < 5) {
-        copz.add(createCop.bind(this)());
+        copz.add(createCop.bind(this)(player));
     }
     i=1;
     copz.forEach(function (v) {
@@ -62,7 +62,7 @@ function gameUpdate () {
         v.body.velocity.x = i*10;
         i++;
     });
-
+    console.log(this.camera)
 
     // lol
     player.tint = Math.random() * 0xffffff;
