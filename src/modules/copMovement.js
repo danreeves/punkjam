@@ -8,7 +8,7 @@ var RUN_SPEED = 3500,
 
 module.exports = function (cop, player) {
 
-    if (!player.body.touching.down) cop.body.maxVelocity.setTo(cop.maxSpeed/2, cop.maxSpeed * 10);
+    if (!player.body.touching.down) cop.body.maxVelocity.setTo(cop.maxSpeed/3, cop.maxSpeed * 10);
     else cop.body.maxVelocity.setTo(cop.maxSpeed, cop.maxSpeed * 10);
 
     if (player.body.x < cop.body.x) {
