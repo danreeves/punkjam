@@ -11,7 +11,7 @@ module.exports = function (copz, wantedLevel) {
                     50 : (wantedLevel === 6) ?
                     100 : 0;
 
-    if (maxCopz >= copz.length) return false;
+    if (copz.length >= maxCopz) return false;
 
-    return false;
+    return true;
 };

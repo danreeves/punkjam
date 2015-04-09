@@ -1,5 +1,8 @@
 // game.js
 
+// External
+var debounce = require('debounce');
+
 // Create
 var createPlayer = require('../objects/player'),
     createCop   = require('../objects/cop'),
@@ -14,13 +17,13 @@ var playerMovement = require('../modules/playerMovement'),
 // Globals
 
 var player, floor, cursors, copz,
-    MAX_COPZ = 200;
+    LAST_SPAWN = 0, MAX_COPZ = 200;
 
 function gamePreload () {
-    this.load.spritesheet('dude', 'assets/img/dude.png', 36, 36);
+    this.load.spritesheet('dude', 'assets/img/Punk jam/double size sprite sheet punk 1.png', 61.8, 86);
+    this.load.spritesheet('cop', 'assets/img/Punk jam/double size sprite sheet cop 1.png', 61.8, 86);
     this.load.image('bg', 'assets/img/longstreet.gif');
     this.load.image('sp', 'assets/img/spacer.gif');
-    this.load.spritesheet('city_sheet', 'assets/img/city_sheet.gif');
 }
 
 function gameCreate () {
@@ -62,15 +65,19 @@ function gameUpdate (test) {
     // Copz
     var wlvl = wantedLevel.bind(this)(player);
     if (canSpawnCopz.bind(this)(copz, wlvl)) {
-        copz.add(createCop.bind(this)(this.camera));
+        if ( (this.time.now - LAST_SPAWN) > 1000 ) {
+            copz.add(createCop.bind(this)(this.camera));
+            LAST_SPAWN = this.time.now;
+        }
     }
     copz.forEach(function (cop) {
         copMovement(cop, player);
     });
+    console.log(canSpawnCopz.bind(this)(copz, wlvl));
 
 
     // lol
-    player.tint = Math.random() * 0xffffff;
+    // player.tint = Math.random() * 0xffffff;
 }
 
 

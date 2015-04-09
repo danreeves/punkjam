@@ -10,7 +10,7 @@ module.exports = function () {
     // The player and its settings
     var player;
     player = this.add.sprite(32, this.world.height - 200, 'dude');
-    player.scale.setTo(2);
+    // player.scale.setTo(2);
     player.anchor.setTo(0.5,0.5);
     player.smoothed = false;
 
@@ -26,9 +26,9 @@ module.exports = function () {
     player.body.drag.setTo(DRAG, 0);
 
     //  Our two animations, walking left and right.
-    player.animations.add('run', [37, 38], 6, true);
-    player.animations.add('jump', [39], 1, true);
-    player.animations.add('idle', [3], 1, true);
+    player.animations.add('run', [0, 1], 6, true);
+    player.animations.add('jump', [2], 1, true);
+    player.animations.add('idle', [3, 3, 4], 2, true);
     player.animations.play('idle');
 
     // misc

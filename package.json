@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/danreeves/punkjam",
   "dependencies": {
+    "debounce": "^1.0.0",
     "phaser": "^2.2.2"
   },
   "devDependencies": {
