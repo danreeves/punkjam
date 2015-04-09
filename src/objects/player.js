@@ -9,7 +9,8 @@ module.exports = function () {
 
     // The player and its settings
     var player;
-    player = this.add.sprite(32, this.world.height - 200, 'dude');
+    spriteName = 'p' + (Math.floor(Math.random() * 4) + 1).toString();
+    player = this.add.sprite(32, this.world.height - 200, spriteName);
     // player.scale.setTo(2);
     player.anchor.setTo(0.5,0.5);
     player.smoothed = false;

@@ -24,7 +24,8 @@ module.exports = function (camera) {
         )
     );
 
-    cop = this.add.sprite(spawnLocations[Math.floor(Math.random()*2)], this.world.height - 200, 'cop');
+    spriteName = 'cop' + (Math.floor(Math.random() * 4) + 1).toString();
+    cop = this.add.sprite(spawnLocations[Math.floor(Math.random()*2)], this.world.height - 200, spriteName);
     // cop.scale.setTo(2);
     cop.anchor.setTo(0.5,0.5);
     cop.smoothed = false;
@@ -42,7 +43,7 @@ module.exports = function (camera) {
     cop.body.drag.setTo(DRAG, 0);
 
     //  Our two animations, walking left and right.
-    cop.animations.add('run', [0, 1], 6, true);
+    cop.animations.add('run', [0, 1], Math.floor(Math.random() * 7) + 3, true);
     cop.animations.add('jump', [2], 1, true);
     cop.animations.add('idle', [3, 3, 4], 2, true);
     cop.animations.play('idle');
