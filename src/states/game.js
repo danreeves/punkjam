@@ -103,7 +103,7 @@ function gameUpdate (test) {
     // Copz
     var wlvl = wantedLevel.bind(this)(player);
     if (canSpawnCopz.bind(this)(copz, wlvl)) {
-        if ( (this.time.now - LAST_SPAWN) > 1000 ) {
+        if ( (this.time.now - LAST_SPAWN) > 333 ) {
             copz.add(createCop.bind(this)(this.camera));
             LAST_SPAWN = this.time.now;
         }
@@ -125,6 +125,13 @@ function gameUpdate (test) {
         wantedText.text = 'Wanted level: ' + wlvl;
         hpText.text = player.health;
     }
+
+    copz.forEach(function (cop) {
+        if (cop.body.x < game.camera.view.left - 200 || cop.body.x > game.camera.view.right + 200 ) cop.destroy();
+    });
+
+    if (player.health < 1) this.state.start('game');
+
 
 }
 

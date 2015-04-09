@@ -1,6 +1,6 @@
 // cop.js
 var DEADZONE_WIDTH = 400,
-    MAX_SPEED = 250,
+    MAX_SPEED = 350,
     ACCELERATION = 1000,
     DRAG = 1000,
     GRAVITY = 2000,
@@ -12,7 +12,7 @@ module.exports = function (camera) {
     var spawnLocations = [];
 
     spawnLocations.push(
-        Math.min(
+        Math.max(
             camera.view.left - 32,
             -WORLD_OVERFLOW
         )
@@ -37,8 +37,9 @@ module.exports = function (camera) {
     // cop.body.bounce.y = 0.2;
     cop.body.gravity.y = GRAVITY;
     // cop.body.collideWorldBounds = true;
-
-    cop.maxSpeed = Math.min(MAX_SPEED * (parseFloat((Math.random() * 1).toFixed(2), 10) + 0.5), 345);
+    // (parseFloat((Math.random() * 1).toFixed(2), 10)
+    var speeds = [50, 100, 150, 200, 250];
+    cop.maxSpeed = Math.min(MAX_SPEED + speeds[Math.floor((Math.random() * 5))], 345);
     cop.body.maxVelocity.setTo(cop.maxSpeed, cop.maxSpeed * 10);
     cop.body.drag.setTo(DRAG, 0);
 
