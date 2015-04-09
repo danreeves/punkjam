@@ -17,6 +17,7 @@ module.exports = function () {
 
     //  We need to enable physics on the player
     this.physics.arcade.enable(player);
+    player.body.setSize(25,50,-2.5,6);
 
     //  Player physics properties. Give the little guy a slight bounce.
     // player.body.bounce.y = 0.2;

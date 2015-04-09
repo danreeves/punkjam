@@ -32,6 +32,7 @@ module.exports = function (camera) {
 
     //  We need to enable physics on the cop
     this.physics.arcade.enable(cop);
+    cop.body.setSize(25,50,-2.5,6);
 
     //  cop physics properties. Give the little guy a slight bounce.
     // cop.body.bounce.y = 0.2;

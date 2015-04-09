@@ -30,7 +30,7 @@ function particleBurst(emitter, player) {
     //  The second gives each particle a 2000ms lifespan
     //  The third is ignored when using burst/explode mode
     //  The final parameter (10) is how many particles will be emitted in this single burst
-    emitter.start(true, 500, null, 20);
+    emitter.start(true, 50000000, null, 100);
 
 }
 
@@ -70,7 +70,7 @@ function gameCreate () {
     floor = createFloor.bind(this)();
 
     // emitter
-    emitter = this.add.emitter(0, 0, 200);
+    emitter = this.add.emitter(0, 0, 2000);
     emitter.makeParticles('bl');
     emitter.gravity = 900;
 
@@ -96,6 +96,10 @@ function gameUpdate (test) {
     // Collisions
     this.physics.arcade.collide(player, floor);
     this.physics.arcade.collide(copz, floor);
+    this.physics.arcade.collide(emitter, floor, function (a,b) {
+        a.body.velocity.x = a.body.velocity.y = 0;
+        b.body.velocity.x = b.body.velocity.y = 0;
+    });
 
     // Player
     playerMovement.bind(this)(player, cursors);
@@ -139,5 +143,15 @@ function gameUpdate (test) {
 module.exports = {
     preload: gamePreload,
     create:  gameCreate,
+    render: function () {
+        if (window.location.search.search('debug') > -1) {
+            this.game.time.advancedTiming = true;
+            this.game.debug.body(player);
+            copz.forEach(function (cop) {
+                this.game.debug.body(cop);
+            }, this, true);
+            this.game.debug.text(this.game.time.fps +' fps' || '--', 2, 14, "#00ff00");
+        }
+    },
     update:  gameUpdate
 };
