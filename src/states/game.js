@@ -6,6 +6,7 @@ var debounce = require('debounce');
 // Create
 var createPlayer = require('../objects/player'),
     createCop   = require('../objects/cop'),
+    createCoin = require('../objects/coin'),
     createFloor = require('../objects/floor');
 
 // Update
@@ -13,12 +14,14 @@ var playerMovement = require('../modules/playerMovement'),
     copMovement = require('../modules/copMovement'),
     copAttack = require('../modules/copAttack'),
     wantedLevel = require('../modules/wantedLevel'),
+    collectCoin = require('../modules/collect'),
     canSpawnCopz = require('../modules/canSpawnCopz');
 
 // Globals
 
 var player, floor, cursors, copz,
-    LAST_SPAWN = 0, MAX_COPZ = 200, LAST_HIT = 0;
+    LAST_SPAWN = 0, MAX_COPZ = 200, LAST_HIT = 0
+    MAX_COINZ = 1;
 
 function particleBurst(emitter, player) {
 
@@ -44,6 +47,8 @@ function gamePreload () {
     this.load.spritesheet('cop2', 'assets/img/Punk jam/double size sprite sheet cop 2.png', 61.8, 86);
     this.load.spritesheet('cop3', 'assets/img/Punk jam/double size sprite sheet cop 3.png', 61.8, 86);
     this.load.spritesheet('cop4', 'assets/img/Punk jam/double size sprite sheet cop 4.png', 61.8, 86);
+
+    this.load.image('coin', 'assets/img/Punk jam/anarchy coin 2.png');
 
     this.load.image('bg', 'assets/img/Punk jam/City backdrop cycle copy.png');
     this.load.image('bgbg', 'assets/img/Punk jam/City Backdrop silhouette copy.png');
@@ -83,12 +88,20 @@ function gameCreate () {
     // copz
     copz = this.add.group();
 
+    // coinz
+    coinz = this.add.group();
+    coinz.enableBody = true;
+    coinz.add(createCoin.bind(this)(this.camera));
+
     // text
     wantedText = this.add.text(16, 16, 'Wanted Level: 0', { fontSize: '32px', fill: 'transparent' });
     wantedText.fixedToCamera = true;
 
     hpText = this.add.text(this.game.width - 100, 16, player.health, { fontSize: '32px', fill: '#f00' });
     hpText.fixedToCamera = true;
+
+    scoreText = this.add.text(300, 16, 'Score: 0', { fontSize: '32px', fill: '#ff0' });
+    scoreText.fixedToCamera = true;
 }
 
 function gameUpdate (test) {
@@ -100,6 +113,7 @@ function gameUpdate (test) {
         a.body.velocity.x = a.body.velocity.y = 0;
         b.body.velocity.x = b.body.velocity.y = 0;
     });
+    this.physics.arcade.overlap(player, coinz, collectCoin, null, this);
 
     // Player
     playerMovement.bind(this)(player, cursors);
@@ -129,10 +143,15 @@ function gameUpdate (test) {
         wantedText.text = 'Wanted level: ' + wlvl;
         hpText.text = player.health;
     }
+    scoreText.text = 'Score: ' + player.score;
 
     copz.forEach(function (cop) {
         if (cop.body.x < game.camera.view.left - 200 || cop.body.x > game.camera.view.right + 200 ) cop.destroy();
     });
+
+    if (coinz.length < wlvl) {
+        coinz.add(createCoin.bind(this)(this.camera));
+    }
 
     if (player.health < 1) this.state.start('game');
 

@@ -37,6 +37,7 @@ module.exports = function () {
     player.firstJump = null;
     player.jumps = 0;
     player.health = 100;
+    player.score = 0;
 
     // camera
     this.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON);
