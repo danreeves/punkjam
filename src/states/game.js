@@ -56,8 +56,11 @@ function gamePreload () {
     this.load.image('bl', 'assets/img/blood.gif');
 
 
-    this.load.audio('intro', 'assets/sound/intro.mp3');
+    // this.load.audio('intro', 'assets/sound/intro.mp3');
     this.load.audio('punkLoop', 'assets/sound/punkloop.mp3');
+    this.load.audio('pickup', 'assets/sound/alright.mp3');
+    this.load.audio('grunt1', 'assets/sound/grunt1.mp3');
+    this.load.audio('grunt2', 'assets/sound/grunt2.mp3');
 
 }
 
@@ -96,7 +99,7 @@ function gameCreate () {
     // coinz
     coinz = this.add.group();
     coinz.enableBody = true;
-    coinz.add(createCoin.bind(this)(this.camera));
+    coinz.add(createCoin.bind(this)(this.camera, 250, 250));
 
     // text
     wantedText = this.add.text(16, 16, 'Wanted Level: 0', { fontSize: '32px', fill: 'transparent' });
@@ -109,26 +112,31 @@ function gameCreate () {
     scoreText.fixedToCamera = true;
 
     // Sound
-    intro = this.add.audio('intro');
-    punkLoop = this.add.audio('punkLoop');
-    sounds = [intro, punkLoop];
+    // var intro = this.add.audio('intro');
+    var punkLoop = this.add.audio('punkLoop');
+    var pickup = this.add.audio('pickup');
+    var grunt1 = this.add.audio('grunt1');
+    var grunt2 = this.add.audio('grunt2');
+    this.sounds = [punkLoop, pickup, grunt1, grunt2];
     //  Being mp3 files these take time to decode, so we can't play them instantly
     //  Using setDecodedCallback we can be notified when they're ALL ready for use.
     //  The audio files could decode in ANY order, we can never be sure which it'll be.
+    // this.sounds.forEach(function (v) {
+    //     v.stop();
+    // });
+    // this.sound.setDecodedCallback(this.sounds, function start() {
 
-    this.sound.setDecodedCallback(sounds, function start() {
 
-        intro.loopFull(1);
-        punkLoop.volume = 0;
+        // this.sounds[1].stop();
         // punkLoop.loopFull(0);
 
-    }, this);
+    // }, this);
 
 }
 
 
 function gameUpdate (test) {
-
+if (!this.sounds[0].isPlaying) this.sounds[0].loopFull(1);
     // Collisions
     this.physics.arcade.collide(player, floor);
     this.physics.arcade.collide(copz, floor);
@@ -156,6 +164,7 @@ function gameUpdate (test) {
             var hit = copAttack(cop, player, emitter);
             if (hit) {
                 particleBurst(emitter, player);
+                game.sounds[Math.floor((Math.random() * 2) + 2)].play();
                 LAST_HIT = game.time.now;
             }
         }
@@ -166,12 +175,10 @@ function gameUpdate (test) {
         wantedText.text = 'Wanted level: ' + wlvl;
         hpText.text = player.health;
 
-        if (punkLoop.volume !== 1) {
-            intro.fadeOut(1000);
-            // punkLoop.volume = 1;
-            // punkLoop.restart();
-            punkLoop.loopFull(1);
-        }
+        // if (this.sounds[1].volume !== 1) {
+        //     this.sounds[0].fadeOut(1000);
+        //     this.sounds[1].loopFull(1);
+        // }
     }
     scoreText.text = 'Score: ' + player.score;
 
@@ -183,7 +190,11 @@ function gameUpdate (test) {
         coinz.add(createCoin.bind(this)(this.camera));
     }
 
-    if (player.health < 1) this.state.start('game');
+    if (player.health < 1) {
+        this.sound.stopAll();
+        this.state.start('game');
+    }
+
 
 
 }
