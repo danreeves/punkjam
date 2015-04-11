@@ -54,6 +54,11 @@ function gamePreload () {
     this.load.image('bgbg', 'assets/img/Punk jam/City Backdrop silhouette copy.png');
     this.load.image('sp', 'assets/img/spacer.gif');
     this.load.image('bl', 'assets/img/blood.gif');
+
+
+    this.load.audio('intro', 'assets/sound/intro.mp3');
+    this.load.audio('punkLoop', 'assets/sound/punkloop.mp3');
+
 }
 
 function gameCreate () {
@@ -102,7 +107,25 @@ function gameCreate () {
 
     scoreText = this.add.text(300, 16, 'Score: 0', { fontSize: '32px', fill: '#ff0' });
     scoreText.fixedToCamera = true;
+
+    // Sound
+    intro = this.add.audio('intro');
+    punkLoop = this.add.audio('punkLoop');
+    sounds = [intro, punkLoop];
+    //  Being mp3 files these take time to decode, so we can't play them instantly
+    //  Using setDecodedCallback we can be notified when they're ALL ready for use.
+    //  The audio files could decode in ANY order, we can never be sure which it'll be.
+
+    this.sound.setDecodedCallback(sounds, function start() {
+
+        intro.loopFull(1);
+        punkLoop.volume = 0;
+        // punkLoop.loopFull(0);
+
+    }, this);
+
 }
+
 
 function gameUpdate (test) {
 
@@ -142,6 +165,13 @@ function gameUpdate (test) {
         wantedText.fill = '#fff';
         wantedText.text = 'Wanted level: ' + wlvl;
         hpText.text = player.health;
+
+        if (punkLoop.volume !== 1) {
+            intro.fadeOut(1000);
+            // punkLoop.volume = 1;
+            // punkLoop.restart();
+            punkLoop.loopFull(1);
+        }
     }
     scoreText.text = 'Score: ' + player.score;
 
