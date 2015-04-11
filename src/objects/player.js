@@ -37,7 +37,12 @@ module.exports = function () {
     player.firstJump = null;
     player.jumps = 0;
     player.health = 100;
+    try {
+        if (window.location.search.search('god') > -1) player.health = Infinity;
+        if (window.location.search.search('hp') > -1) player.health = parseInt(window.location.search.match(/hp=(\d+)/)[1], 10);
+    } catch (e){}
     player.score = 0;
+    player.dead = false;
 
     // camera
     this.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON);

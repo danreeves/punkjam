@@ -26,6 +26,10 @@ module.exports = function (camera) {
 
     spriteName = 'cop' + (Math.floor(Math.random() * 4) + 1).toString();
     cop = this.add.sprite(spawnLocations[Math.floor(Math.random()*2)], this.world.height - 200, spriteName);
+    cop.lifespan = 60000;
+    cop.events.onKilled.add(function (sprite){
+        sprite.destroy();
+    })
     // cop.scale.setTo(2);
     cop.anchor.setTo(0.5,0.5);
     cop.smoothed = false;

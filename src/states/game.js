@@ -15,13 +15,23 @@ var playerMovement = require('../modules/playerMovement'),
     copAttack = require('../modules/copAttack'),
     wantedLevel = require('../modules/wantedLevel'),
     collectCoin = require('../modules/collect'),
+    showWanted = require('../modules/wantedDisplay'),
     canSpawnCopz = require('../modules/canSpawnCopz');
 
 // Globals
 
-var player, floor, cursors, copz,
-    LAST_SPAWN = 0, MAX_COPZ = 200, LAST_HIT = 0
-    MAX_COINZ = 1;
+var player, floor, cursors, copz, sprites,
+    LAST_SPAWN = 0, MAX_COPZ = 200, LAST_HIT = 0,
+    MAX_COINZ = 1,
+    MUSIC = true, SOUND = true,
+    GAME_OVER = false;
+
+    if (window.location.search.search('nomusic') > -1) {
+        MUSIC = false;
+    }
+    if (window.location.search.search('nosound') > -1) {
+        MUSIC = SOUND = false;
+    }
 
 function particleBurst(emitter, player) {
 
@@ -38,20 +48,21 @@ function particleBurst(emitter, player) {
 }
 
 function gamePreload () {
-    this.load.spritesheet('p1', 'assets/img/Punk jam/double size sprite sheet punk 1.png', 61.8, 86);
-    this.load.spritesheet('p2', 'assets/img/Punk jam/double size sprite sheet punk 2.png', 61.8, 86);
-    this.load.spritesheet('p3', 'assets/img/Punk jam/double size sprite sheet punk 3.png', 61.8, 86);
-    this.load.spritesheet('p4', 'assets/img/Punk jam/double size sprite sheet punk 4.png', 61.8, 86);
+    this.load.spritesheet('p1', 'assets/img/punk1.png', 61.8, 86);
+    this.load.spritesheet('p2', 'assets/img/punk2.png', 61.8, 86);
+    this.load.spritesheet('p3', 'assets/img/punk3.png', 61.8, 86);
+    this.load.spritesheet('p4', 'assets/img/punk4.png', 61.8, 86);
 
-    this.load.spritesheet('cop1', 'assets/img/Punk jam/double size sprite sheet cop 1.png', 61.8, 86);
-    this.load.spritesheet('cop2', 'assets/img/Punk jam/double size sprite sheet cop 2.png', 61.8, 86);
-    this.load.spritesheet('cop3', 'assets/img/Punk jam/double size sprite sheet cop 3.png', 61.8, 86);
-    this.load.spritesheet('cop4', 'assets/img/Punk jam/double size sprite sheet cop 4.png', 61.8, 86);
+    this.load.spritesheet('cop1', 'assets/img/cop1.png', 61.8, 86);
+    this.load.spritesheet('cop2', 'assets/img/cop2.png', 61.8, 86);
+    this.load.spritesheet('cop3', 'assets/img/cop3.png', 61.8, 86);
+    this.load.spritesheet('cop4', 'assets/img/cop4.png', 61.8, 86);
 
-    this.load.image('coin', 'assets/img/Punk jam/anarchy coin 2.png');
+    this.load.image('coin', 'assets/img/anarchy.png');
+    this.load.image('wanted', 'assets/img/wanted.png');
 
-    this.load.image('bg', 'assets/img/Punk jam/City backdrop cycle copy.png');
-    this.load.image('bgbg', 'assets/img/Punk jam/City Backdrop silhouette copy.png');
+    this.load.image('bg', 'assets/img/bg.png');
+    // this.load.image('bgbg', 'assets/img/Punk jam/City Backdrop silhouette copy.png');
     this.load.image('sp', 'assets/img/spacer.gif');
     this.load.image('bl', 'assets/img/blood.gif');
 
@@ -65,7 +76,7 @@ function gamePreload () {
 }
 
 function gameCreate () {
-
+    GAME_OVER = false
     // enable physics
     this.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -102,41 +113,55 @@ function gameCreate () {
     coinz.add(createCoin.bind(this)(this.camera, 250, 250));
 
     // text
-    wantedText = this.add.text(16, 16, 'Wanted Level: 0', { fontSize: '32px', fill: 'transparent' });
-    wantedText.fixedToCamera = true;
+    // wantedText = this.add.text(16, 16, 'Wanted Level: 0', { fontSize: '32px', fill: 'transparent' });
+    // wantedText.fixedToCamera = true;
+
+    var spriteWidth = this.cache.getImage('wanted').width * 0.075;
+
+    var w1 = this.add.sprite(16, 16, 'wanted');
+    var w2 = this.add.sprite(16 + spriteWidth * 1, 16, 'wanted');
+    var w3 = this.add.sprite(16 + spriteWidth * 2, 16, 'wanted');
+    var w4 = this.add.sprite(16 + spriteWidth * 3, 16, 'wanted');
+    var w5 = this.add.sprite(16 + spriteWidth * 4, 16, 'wanted');
+    var w6 = this.add.sprite(16 + spriteWidth * 5, 16, 'wanted');
+
+    sprites = [w1,w2,w3,w4,w5,w6];
+    sprites.forEach(function (v) {
+        v.alpha = 0;
+        v.fixedToCamera = true;
+        v.scale.setTo(0.075);
+    });
 
     hpText = this.add.text(this.game.width - 100, 16, player.health, { fontSize: '32px', fill: '#f00' });
     hpText.fixedToCamera = true;
 
-    scoreText = this.add.text(300, 16, 'Score: 0', { fontSize: '32px', fill: '#ff0' });
+    scoreText = this.add.text(this.game.width - 200, 16, '0', { fontSize: '32px', fill: '#ff0' });
     scoreText.fixedToCamera = true;
 
+    gameoverText = this.add.text(this.game.width/2, this.game.height/3, 'YOU DIED', { fontSize: '62px', fill: '#f00' });
+    gameoverText.alpha = 0;
+    gameoverText.anchor.x = Math.round(gameoverText.width * 0.5) / gameoverText.width;
+    gameoverText.fixedToCamera = true;
+
+    replayText = this.add.text(this.game.width/2, this.game.height/2, 'Restart?', { fontSize: '32px', fill: '#f00' });
+    replayText.alpha = 0;
+    replayText.anchor.x = Math.round(replayText.width * 0.5) / replayText.width;
+    replayText.fixedToCamera = true;
+
     // Sound
-    // var intro = this.add.audio('intro');
     var punkLoop = this.add.audio('punkLoop');
     var pickup = this.add.audio('pickup');
     var grunt1 = this.add.audio('grunt1');
     var grunt2 = this.add.audio('grunt2');
     this.sounds = [punkLoop, pickup, grunt1, grunt2];
-    //  Being mp3 files these take time to decode, so we can't play them instantly
-    //  Using setDecodedCallback we can be notified when they're ALL ready for use.
-    //  The audio files could decode in ANY order, we can never be sure which it'll be.
-    // this.sounds.forEach(function (v) {
-    //     v.stop();
-    // });
-    // this.sound.setDecodedCallback(this.sounds, function start() {
-
-
-        // this.sounds[1].stop();
-        // punkLoop.loopFull(0);
-
-    // }, this);
+    if (!MUSIC) this.sounds[0].volume = 0;
+    if (!SOUND) this.sound.volume = 0;
 
 }
 
 
 function gameUpdate (test) {
-if (!this.sounds[0].isPlaying) this.sounds[0].loopFull(1);
+    if (!this.sounds[0].isPlaying && MUSIC && SOUND) this.sounds[0].loopFull(1);
     // Collisions
     this.physics.arcade.collide(player, floor);
     this.physics.arcade.collide(copz, floor);
@@ -145,22 +170,23 @@ if (!this.sounds[0].isPlaying) this.sounds[0].loopFull(1);
         b.body.velocity.x = b.body.velocity.y = 0;
     });
     this.physics.arcade.overlap(player, coinz, collectCoin, null, this);
-
+    if (!GAME_OVER) {
     // Player
     playerMovement.bind(this)(player, cursors);
 
     // Copz
     var wlvl = wantedLevel.bind(this)(player);
     if (canSpawnCopz.bind(this)(copz, wlvl)) {
-        if ( (this.time.now - LAST_SPAWN) > 333 ) {
+        if ( (this.time.now - LAST_SPAWN) > (3000/wlvl) ) {
             copz.add(createCop.bind(this)(this.camera));
             LAST_SPAWN = this.time.now;
         }
+        // if (copz.length > 50) copz.children[0].destroy();
     }
     var game = this;
     copz.forEach(function (cop) {
         copMovement(cop, player);
-        if ( (game.time.now - LAST_HIT) > 1000 ) {
+        if ( (game.time.now - LAST_HIT) > 666 ) {
             var hit = copAttack(cop, player, emitter);
             if (hit) {
                 particleBurst(emitter, player);
@@ -171,16 +197,12 @@ if (!this.sounds[0].isPlaying) this.sounds[0].loopFull(1);
     });
 
     if (player.jumps > 0) {
-        wantedText.fill = '#fff';
-        wantedText.text = 'Wanted level: ' + wlvl;
+        // wantedText.fill = '#fff';
+        // wantedText.text = 'Wanted level: ' + wlvl;
         hpText.text = player.health;
-
-        // if (this.sounds[1].volume !== 1) {
-        //     this.sounds[0].fadeOut(1000);
-        //     this.sounds[1].loopFull(1);
-        // }
     }
-    scoreText.text = 'Score: ' + player.score;
+    scoreText.text = '' + player.score;
+    showWanted.bind(this)(sprites, wlvl);
 
     copz.forEach(function (cop) {
         if (cop.body.x < game.camera.view.left - 200 || cop.body.x > game.camera.view.right + 200 ) cop.destroy();
@@ -191,10 +213,29 @@ if (!this.sounds[0].isPlaying) this.sounds[0].loopFull(1);
     }
 
     if (player.health < 1) {
-        this.sound.stopAll();
-        this.state.start('game');
+        GAME_OVER = true;
     }
+    } else {
+        // GAME OVER
+        if (!player.dead) {
+            player.dead = true;
+            player.kill();
+            death = this.add.emitter(0, 0, 1);
+            death.makeParticles(player.key);
+            death.gravity = 100;
+            death.x = player.body.x + player.body.width/2;
+            death.y = player.body.y + player.body.height/2;
+            death.start(true, 50000000, null, 1);
+            this.add.tween(gameoverText).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true, 0, 0, false);
+            this.add.tween(replayText).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true, 250, 0, false);
+            replayText.inputEnabled = true;
+            replayText.events.onInputDown.add(function () {
+                this.sound.stopAll();
+                this.state.start('game');
+            }, this);
+        }
 
+    }
 
 
 }
