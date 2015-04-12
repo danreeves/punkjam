@@ -31,8 +31,14 @@ module.exports = {
         this.load.audio('pickup', 'assets/sound/alright.mp3');
         this.load.audio('grunt1', 'assets/sound/grunt1.mp3');
         this.load.audio('grunt2', 'assets/sound/grunt2.mp3');
+
+        this.load.image('numbers', 'assets/img/numbers.png');
+        this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     },
     create: function () {
-        this.game.state.start('game');
+        var game = this;
+        setTimeout(function () {
+            game.game.state.start('game');
+        }, 1000);
     }
 };

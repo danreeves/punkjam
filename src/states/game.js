@@ -104,19 +104,31 @@ function gameCreate () {
         v.scale.setTo(0.075);
     });
 
-    hpText = this.add.text(this.game.width - 100, 16, player.health, { fontSize: '32px', fill: '#f00' });
-    hpText.fixedToCamera = true;
+    hpText = this.add.retroFont('numbers', 36, 54, '0123456789', 10, 0, 0);
+    hpText.text = player.health.toString();
+    hpDisplay = this.add.image(this.game.width - 120, 16, hpText);
+    // hpDisplay.scale.setTo(0.1);
+    hpDisplay.tint = 0xff0000;
+    hpDisplay.fixedToCamera = true;
 
-    scoreText = this.add.text(this.game.width - 200, 16, '0', { fontSize: '32px', fill: '#ff0' });
-    scoreText.fixedToCamera = true;
+    // scoreText = this.add.text(this.game.width - 200, 16, '0', { fontSize: '32px', fill: '#ff0' });
+    // scoreText.fixedToCamera = true;
+    scoreText = this.add.retroFont('numbers', 36, 54, '0123456789', 10, 0, 0);
+    scoreText.text = player.health.toString();
+    scoreDisplay = this.add.image(this.game.width - 250, 16, scoreText);
+    // scoreDisplay.scale.setTo(0.1);
+    scoreDisplay.tint = 0xffff00;
+    scoreDisplay.fixedToCamera = true;
 
-    gameoverText = this.add.text(this.game.width/2, this.game.height/3, 'YOU DIED', { fontSize: '62px', fill: '#f00' });
+    gameoverText = this.add.text(this.game.width/2, this.game.height/3, 'YOU LOSE', { fontSize: '62px', fill: '#f00' });
     gameoverText.alpha = 0;
+    gameoverText.font = 'Frijole';
     gameoverText.anchor.x = Math.round(gameoverText.width * 0.5) / gameoverText.width;
     gameoverText.fixedToCamera = true;
 
     replayText = this.add.text(this.game.width/2, this.game.height/2, 'Restart?', { fontSize: '32px', fill: '#f00' });
     replayText.alpha = 0;
+    replayText.font = 'Frijole';
     replayText.anchor.x = Math.round(replayText.width * 0.5) / replayText.width;
     replayText.fixedToCamera = true;
 
@@ -171,7 +183,7 @@ function gameUpdate (test) {
     if (player.jumps > 0) {
         // wantedText.fill = '#fff';
         // wantedText.text = 'Wanted level: ' + wlvl;
-        hpText.text = player.health;
+        hpText.text = player.health.toString();
     }
     scoreText.text = '' + player.score;
     showWanted.bind(this)(sprites, wlvl);
