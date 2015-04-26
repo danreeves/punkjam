@@ -59,11 +59,27 @@ function gameCreate () {
     this.stage.smoothed = false;
 
     //  background
-    // this.add.tileSprite(0, -90, this.game.width, 540, 'bgbg').scale.setTo(2);
-    this.add.tileSprite(0, -90, this.cache.getImage('bg').width*2, this.cache.getImage('bg').height, 'bg');
+    // this.add.tileSprite(0, -90, this.cache.getImage('bg').width*2, this.cache.getImage('bg').height, 'bg');
+    this.add.tileSprite(0, 0, this.cache.getImage('bg').width*2, this.cache.getImage('bg').height, 'bg');
 
     // add floor
     floor = createFloor.bind(this)();
+
+    // add sign
+    this.add.image(130, this.game.height - 160, 'sign');
+    var x = 10;
+    var div = this.world.width/x;
+    for (var i = 1; i <= x; i++) {
+        this.add.image(
+            getRandomInt(
+                Math.max(250, div*i),
+                (i === 1) ? Math.min(div*(i+1), 800): div*(i+1)
+            ),
+            this.game.height - 60,
+            (Math.random()<.33) ? 'ramp' : 'bin'
+        );
+    };
+
 
     // emitter
     emitter = this.add.emitter(0, 0, 2000);
@@ -191,6 +207,9 @@ function gameUpdate (test) {
     copz.forEach(function (cop) {
         if (cop.body.x < game.camera.view.left - 200 || cop.body.x > game.camera.view.right + 200 ) cop.destroy();
     });
+    coinz.forEach(function (coin) {
+        if (coin.body.x < game.camera.view.left - 200 || coin.body.x > game.camera.view.right + 200 ) coin.destroy();
+    });
 
     if (coinz.length < wlvl) {
         coinz.add(createCoin.bind(this)(this.camera));
@@ -222,6 +241,10 @@ function gameUpdate (test) {
     }
 
 
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 

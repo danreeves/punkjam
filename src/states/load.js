@@ -2,7 +2,6 @@
 
 module.exports = {
     preload: function () {
-
         var loading = this.game.add.sprite(this.game.width/2, 0, 'loading');
         loading.anchor.x = Math.round(loading.width * 0.5) / loading.width;
         this.game.load.setPreloadSprite(loading);
@@ -20,17 +19,19 @@ module.exports = {
         this.load.image('coin', 'assets/img/anarchy.png');
         this.load.image('wanted', 'assets/img/wanted.png');
 
-        this.load.image('bg', 'assets/img/bg.png');
-        // this.load.image('bgbg', 'assets/img/Punk jam/City Backdrop silhouette copy.png');
+        this.load.image('bg', 'assets/img/bg-new.png');
         this.load.image('sp', 'assets/img/spacer.gif');
         this.load.image('bl', 'assets/img/blood.gif');
 
+        this.load.image('sign', 'assets/img/sign.png');
+        this.load.image('ramp', 'assets/img/ramp.png');
+        this.load.image('bin', 'assets/img/bin.png');
 
-        // this.load.audio('intro', 'assets/sound/intro.mp3');
         this.load.audio('punkLoop', 'assets/sound/punkloop.mp3');
         this.load.audio('pickup', 'assets/sound/alright.mp3');
         this.load.audio('grunt1', 'assets/sound/grunt1.mp3');
         this.load.audio('grunt2', 'assets/sound/grunt2.mp3');
+
 
         this.load.image('numbers', 'assets/img/numbers.png');
         this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
