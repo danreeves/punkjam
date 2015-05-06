@@ -100,12 +100,8 @@ function gameCreate () {
     coinz.enableBody = true;
     coinz.add(createCoin.bind(this)(this.camera, 250, 250));
 
-    // text
-    // wantedText = this.add.text(16, 16, 'Wanted Level: 0', { fontSize: '32px', fill: 'transparent' });
-    // wantedText.fixedToCamera = true;
-
+    // wanted level
     var spriteWidth = this.cache.getImage('wanted').width * 0.075;
-
     var w1 = this.add.sprite(16, 16, 'wanted');
     var w2 = this.add.sprite(16 + spriteWidth * 1, 16, 'wanted');
     var w3 = this.add.sprite(16 + spriteWidth * 2, 16, 'wanted');
@@ -120,33 +116,46 @@ function gameCreate () {
         v.scale.setTo(0.075);
     });
 
+    // hp text
     hpText = this.add.retroFont('numbers', 36, 54, '0123456789', 10, 0, 0);
     hpText.text = player.health.toString();
     hpDisplay = this.add.image(this.game.width - 120, 16, hpText);
-    // hpDisplay.scale.setTo(0.1);
     hpDisplay.tint = 0xff0000;
     hpDisplay.fixedToCamera = true;
 
-    // scoreText = this.add.text(this.game.width - 200, 16, '0', { fontSize: '32px', fill: '#ff0' });
-    // scoreText.fixedToCamera = true;
+    // score text
     scoreText = this.add.retroFont('numbers', 36, 54, '0123456789', 10, 0, 0);
     scoreText.text = player.health.toString();
     scoreDisplay = this.add.image(this.game.width - 250, 16, scoreText);
-    // scoreDisplay.scale.setTo(0.1);
     scoreDisplay.tint = 0xffff00;
     scoreDisplay.fixedToCamera = true;
 
-    gameoverText = this.add.text(this.game.width/2, this.game.height/3, 'YOU LOSE', { fontSize: '62px', fill: '#f00' });
-    gameoverText.alpha = 0;
-    gameoverText.font = 'Frijole';
-    gameoverText.anchor.x = Math.round(gameoverText.width * 0.5) / gameoverText.width;
-    gameoverText.fixedToCamera = true;
+    //shade
 
-    replayText = this.add.text(this.game.width/2, this.game.height/2, 'Restart?', { fontSize: '32px', fill: '#f00' });
-    replayText.alpha = 0;
-    replayText.font = 'Frijole';
-    replayText.anchor.x = Math.round(replayText.width * 0.5) / replayText.width;
-    replayText.fixedToCamera = true;
+    shade = this.add.graphics(0, 0);
+    shade.beginFill(0x000000, 1);
+    shade.drawRect(0, 0, this.game.width, this.game.height);
+    shade.endFill();
+    shade.alpha = 0;
+    shade.fixedToCamera = true;
+
+    // game over text
+    gameoverText = this.add.retroFont('font', 69.4, 67.5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!?.,1234567890', 5, 0, 0);
+    gameoverText.text = 'YOU LOSE!';
+    gameoverDisplay = this.add.image(this.game.width/2, this.game.height/3, gameoverText);
+    gameoverDisplay.alpha = 0;
+    gameoverDisplay.tint = 0xff0000;
+    gameoverDisplay.anchor.x = Math.round(gameoverText.width * 0.5) / gameoverText.width;
+    gameoverDisplay.fixedToCamera = true;
+
+    // replayText = this.add.text(this.game.width/2, this.game.height/2, 'Restart?', { fontSize: '32px', fill: '#f00' });
+    replayText = this.add.retroFont('font', 69.4, 67.5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!?.,1234567890', 5, 0, 0);
+    replayText.text = 'Replay?';
+    replayDisplay = this.add.image(this.game.width/2, this.game.height/2, replayText);
+    replayDisplay.alpha = 0;
+    replayDisplay.tint = 0xff0000;
+    replayDisplay.anchor.x = Math.round(replayText.width * 0.5) / replayText.width;
+    replayDisplay.fixedToCamera = true;
 
     // Sound
     var punkLoop = this.add.audio('punkLoop');
@@ -229,13 +238,20 @@ function gameUpdate (test) {
             death.x = player.body.x + player.body.width/2;
             death.y = player.body.y + player.body.height/2;
             death.start(true, 50000000, null, 1);
-            this.add.tween(gameoverText).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true, 0, 0, false);
-            this.add.tween(replayText).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true, 250, 0, false);
-            replayText.inputEnabled = true;
-            replayText.events.onInputDown.add(function () {
+            this.add.tween(gameoverDisplay).to( { alpha: 0.75 }, 2000, Phaser.Easing.Linear.None, true, 0, 0, false);
+            this.add.tween(replayDisplay).to( { alpha: 0.75 }, 2000, Phaser.Easing.Linear.None, true, 250, 0, false);
+            this.add.tween(shade).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true, 1500, 0, false);
+            replayDisplay.inputEnabled = true;
+            replayDisplay.events.onInputDown.add(function () {
                 this.sound.stopAll();
                 this.state.start('game');
             }, this);
+            replayDisplay.events.onInputOver.add(function () {
+                replayDisplay.alpha = 1;
+            }, replayDisplay);
+            replayDisplay.events.onInputOut.add(function () {
+                replayDisplay.alpha = 0.75;
+            }, replayDisplay);
         }
 
     }

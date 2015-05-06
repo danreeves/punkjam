@@ -3,13 +3,6 @@ console.log('#punkjam');
 // Game
 var game = new Phaser.Game(960, 540, Phaser.AUTO, 'game');
 
-// Google Font
-WebFontConfig = {
-    google: {
-      families: ['Frijole']
-    }
-};
-
 // States
 game.state.add('boot', require('./states/boot'));
 game.state.add('load', require('./states/load'));

@@ -16,7 +16,7 @@ module.exports = {
         this.load.spritesheet('cop3', 'assets/img/cop3.png', 61.8, 86);
         this.load.spritesheet('cop4', 'assets/img/cop4.png', 61.8, 86);
 
-        this.load.image('coin', 'assets/img/anarchy.png');
+        this.load.image('coin', 'assets/img/anarchycoin.png');
         this.load.image('wanted', 'assets/img/wanted.png');
 
         this.load.image('bg', 'assets/img/bg-new.png');
@@ -32,9 +32,8 @@ module.exports = {
         this.load.audio('grunt1', 'assets/sound/grunt1.mp3');
         this.load.audio('grunt2', 'assets/sound/grunt2.mp3');
 
-
         this.load.image('numbers', 'assets/img/numbers.png');
-        this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+        this.load.image('font', 'assets/img/font.png');
     },
     create: function () {
         var game = this;
