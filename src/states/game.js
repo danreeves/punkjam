@@ -59,7 +59,11 @@ function gameCreate () {
     this.stage.smoothed = false;
 
     //  background
-    // this.add.tileSprite(0, -90, this.cache.getImage('bg').width*2, this.cache.getImage('bg').height, 'bg');
+    bluesky = this.add.image(0, 0, 'bluesky');
+    punksky = this.add.image(0, 0, 'punksky');
+    bluesky.fixedToCamera = punksky.fixedToCamera = true;
+    bluesky.width = punksky.width = this.game.width;
+    punksky.alpha = 0;
     this.add.tileSprite(0, 0, this.cache.getImage('bg').width*2, this.cache.getImage('bg').height, 'bg');
 
     // add floor
@@ -147,7 +151,7 @@ function gameCreate () {
         'SUCKZ 2 B U!',
         'DREAM ON!',
         'IN YOUR FACE!',
-        'GOODNIGHT, JOHNBOY',
+        'GOODNIGHT!',
         'NO FUTURE!',
         'PUNKS DEAD'
     ];
@@ -226,6 +230,9 @@ function gameUpdate (test) {
             // wantedText.fill = '#fff';
             // wantedText.text = 'Wanted level: ' + wlvl;
             hpText.text = player.health.toString();
+            if (punksky.alpha === 0) {
+                this.add.tween(punksky).to( { alpha: 1 }, 1000, Phaser.Easing.Quadratic.InOut, true, 0, 0, false);
+            }
         }
         scoreText.text = '' + player.score;
         showWanted.bind(this)(sprites, wlvl);

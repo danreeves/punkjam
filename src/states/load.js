@@ -20,6 +20,8 @@ module.exports = {
         this.load.image('wanted', 'assets/img/wanted.png');
 
         this.load.image('bg', 'assets/img/bg-new.png');
+        this.load.image('bluesky', 'assets/img/bluesky.png');
+        this.load.image('punksky', 'assets/img/punksky.png');
         this.load.image('sp', 'assets/img/spacer.gif');
         this.load.image('bl', 'assets/img/blood.gif');
 
