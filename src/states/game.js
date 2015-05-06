@@ -135,7 +135,6 @@ function gameCreate () {
     scoreDisplay.fixedToCamera = true;
 
     //shade
-
     shade = this.add.graphics(0, 0);
     shade.beginFill(0x000000, 1);
     shade.drawRect(0, 0, this.game.width, this.game.height);
