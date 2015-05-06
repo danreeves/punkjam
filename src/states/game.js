@@ -140,17 +140,34 @@ function gameCreate () {
     shade.fixedToCamera = true;
 
     // game over text
+    var gameOver = [
+        'YOU LOSE!',
+        'GAME OVER!',
+        'LOSER!',
+        'SUCKZ 2 B U!',
+        'DREAM ON!',
+        'IN YOUR FACE!',
+        'GOODNIGHT, JOHNBOY',
+        'NO FUTURE!',
+        'PUNKS DEAD'
+    ];
     gameoverText = this.add.retroFont('font', 69.4, 67.5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!?.,1234567890', 5, 0, 0);
-    gameoverText.text = 'YOU LOSE!';
+    gameoverText.text = gameOver[getRandomInt(0, gameOver.length-1)];
     gameoverDisplay = this.add.image(this.game.width/2, this.game.height/3, gameoverText);
     gameoverDisplay.alpha = 0;
     gameoverDisplay.tint = 0xff0000;
     gameoverDisplay.anchor.x = Math.round(gameoverText.width * 0.5) / gameoverText.width;
     gameoverDisplay.fixedToCamera = true;
 
-    // replayText = this.add.text(this.game.width/2, this.game.height/2, 'Restart?', { fontSize: '32px', fill: '#f00' });
+    var replay = [
+        'Replay?',
+        'Go again?',
+        'Try again?',
+        'Once more?',
+        'Another shot?'
+    ];
     replayText = this.add.retroFont('font', 69.4, 67.5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!?.,1234567890', 5, 0, 0);
-    replayText.text = 'Replay?';
+    replayText.text = replay[getRandomInt(0, replay.length-1)];
     replayDisplay = this.add.image(this.game.width/2, this.game.height/2, replayText);
     replayDisplay.alpha = 0;
     replayDisplay.tint = 0xff0000;
@@ -180,53 +197,54 @@ function gameUpdate (test) {
     });
     this.physics.arcade.overlap(player, coinz, collectCoin, null, this);
     if (!GAME_OVER) {
-    // Player
-    playerMovement.bind(this)(player, cursors);
+        // Player
+        playerMovement.bind(this)(player, cursors);
 
-    // Copz
-    var wlvl = wantedLevel.bind(this)(player);
-    if (canSpawnCopz.bind(this)(copz, wlvl)) {
-        if ( (this.time.now - LAST_SPAWN) > (3000/wlvl) ) {
-            copz.add(createCop.bind(this)(this.camera));
-            LAST_SPAWN = this.time.now;
-        }
-        // if (copz.length > 50) copz.children[0].destroy();
-    }
-    var game = this;
-    copz.forEach(function (cop) {
-        copMovement(cop, player);
-        if ( (game.time.now - LAST_HIT) > 666 ) {
-            var hit = copAttack(cop, player, emitter);
-            if (hit) {
-                particleBurst(emitter, player);
-                game.sounds[Math.floor((Math.random() * 2) + 2)].play();
-                LAST_HIT = game.time.now;
+        // Copz
+        var wlvl = wantedLevel.bind(this)(player);
+        if (canSpawnCopz.bind(this)(copz, wlvl)) {
+            if ( (this.time.now - LAST_SPAWN) > (3000/wlvl) ) {
+                copz.add(createCop.bind(this)(this.camera));
+                LAST_SPAWN = this.time.now;
             }
+            // if (copz.length > 50) copz.children[0].destroy();
         }
-    });
+        var game = this;
+        copz.forEach(function (cop) {
+            copMovement(cop, player);
+            if ( (game.time.now - LAST_HIT) > 666 ) {
+                var hit = copAttack(cop, player, emitter);
+                if (hit) {
+                    particleBurst(emitter, player);
+                    game.sounds[Math.floor((Math.random() * 2) + 2)].play();
+                    LAST_HIT = game.time.now;
+                }
+            }
+        });
 
-    if (player.jumps > 0) {
-        // wantedText.fill = '#fff';
-        // wantedText.text = 'Wanted level: ' + wlvl;
-        hpText.text = player.health.toString();
-    }
-    scoreText.text = '' + player.score;
-    showWanted.bind(this)(sprites, wlvl);
+        if (player.jumps > 0) {
+            // wantedText.fill = '#fff';
+            // wantedText.text = 'Wanted level: ' + wlvl;
+            hpText.text = player.health.toString();
+        }
+        scoreText.text = '' + player.score;
+        showWanted.bind(this)(sprites, wlvl);
 
-    copz.forEach(function (cop) {
-        if (cop.body.x < game.camera.view.left - 200 || cop.body.x > game.camera.view.right + 200 ) cop.destroy();
-    });
-    coinz.forEach(function (coin) {
-        if (coin.body.x < game.camera.view.left - 200 || coin.body.x > game.camera.view.right + 200 ) coin.destroy();
-    });
+        copz.forEach(function (cop) {
+            if (cop.body.x < game.camera.view.left - 200 || cop.body.x > game.camera.view.right + 200 ) cop.destroy();
+        });
+        coinz.forEach(function (coin) {
+            if (coin.body.x < game.camera.view.left - 200 || coin.body.x > game.camera.view.right + 200 ) coin.destroy();
+        });
 
-    if (coinz.length < wlvl) {
-        coinz.add(createCoin.bind(this)(this.camera));
-    }
+        if (coinz.length < wlvl) {
+            coinz.add(createCoin.bind(this)(this.camera));
+        }
 
-    if (player.health < 1) {
-        GAME_OVER = true;
-    }
+        if (player.health < 1) {
+            GAME_OVER = true;
+        }
+        if (player.x > 4625 && player.jumps === 0) GAME_OVER = true;
     } else {
         // GAME OVER
         if (!player.dead) {
