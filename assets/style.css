@@ -20,3 +20,6 @@ html, body {
   left: 50%;
   margin: 42px 0 0 -480px;
 }
+label {
+  color: white;
+}

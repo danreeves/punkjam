@@ -9,6 +9,18 @@
 </head>
 <body>
     <div id="game" width="960" height="540"></div>
-    <a href="?">All on</a> <a href="?nomusic">No Music</a> <a href="?nosound">No Sound</a> <a href="?debug">Debug</a>
+    <form method="GET">
+        <label>No Sound<input type="checkbox" name="nosound"></label>
+        <label>No Music<input type="checkbox" name="nomusic"></label>
+        <label for="char">Character</label>
+        <select name="char">
+            <option value="">Random</option>
+            <option value="1">Mohawk</option>
+            <option value="2">Skirt</option>
+            <option value="3">Dreads</option>
+            <option value="4">Ponytail</option>
+        </select>
+        <button type="submit">Start</button>
+    </form>
 </body>
 </html>

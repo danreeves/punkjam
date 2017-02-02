@@ -91,7 +91,19 @@ function gameCreate () {
     emitter.gravity = 900;
 
     // add player
-    player = createPlayer.bind(this)();
+    // spriteNo, hp, gravity, run_speed, jump_v
+    // HEALTH = 100,GRAVITY = 2000,MAX_SPEED = 350,JUMP_V = 1000
+    var chars = {
+        1: [1, 150],
+        2: [2, 100, 1600, 350, 1000],
+        3: [3, 100, 1600, 200, 800],
+        4: [4, 100, 2000, 500, 1000],
+    }
+    var charNum = false;
+    try {
+        if (window.location.search.search('char') > -1) charNum = parseInt(window.location.search.match(/char=(\d+)/)[1], 10);
+    } catch (e){}
+    player = createPlayer.apply(this, chars[(charNum || Math.floor(Math.random() * 4) + 1)]);
 
     // controls
     cursors = this.input.keyboard.createCursorKeys();
